@@ -32,3 +32,22 @@ $("#submit").on("click", function(event) {
     $("input").val("");
 
 })
+
+database.ref().on("child-added", function(childSnapshot) {
+    var timeAway;
+
+    var tranStart = moment(childSnapshot.val().start, "HH:mm").subtract(1, "years");
+    var timeDifference = moment().diff(moment(tranStart), "minutes");
+    var residue = timeDifference % childSnapshot.val().recurrence;
+    var timeAway = childSnapshot.val().recurrence - residue;
+    var nextTrain = moment().add(timeAway, "minutes");
+    nextTrain = moment(nextTrain).format("HH:mm")
+    var tranName = (childSnapshot.val().name);
+    var tranTarget = (childSnapshot.val().target);
+    var tranFrequency = (childSnapshot.val().recurrence);
+
+    $("info").append("<tr><td>" + tranName + "</td><td>" + tranTarget + "</td><td>" + tranFrequency + "</td><td>" + nextTrain + "</td><td>" + timeAway + "</td></tr>");
+
+}, function(errorObj) {
+    console.log("Errors handled: " + errorObj.code)
+})
