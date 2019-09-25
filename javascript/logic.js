@@ -33,20 +33,27 @@ $("#submit").on("click", function(event) {
 
 })
 
-database.ref().on("child-added", function(childSnapshot) {
+database.ref().on("child_added", function(childSnapshot) {
+    console.log("child_added")
     var timeAway;
 
     var tranStart = moment(childSnapshot.val().start, "HH:mm").subtract(1, "years");
+    console.log(tranStart)
     var timeDifference = moment().diff(moment(tranStart), "minutes");
+    console.log(timeDifference)
     var residue = timeDifference % childSnapshot.val().recurrence;
+    console.log(residue)
     var timeAway = childSnapshot.val().recurrence - residue;
+    console.log(timeAway)
     var nextTrain = moment().add(timeAway, "minutes");
+    console.log(nextTrain)
     nextTrain = moment(nextTrain).format("HH:mm")
+    console.log(nextTrain)
     var tranName = (childSnapshot.val().name);
     var tranTarget = (childSnapshot.val().target);
     var tranFrequency = (childSnapshot.val().recurrence);
 
-    $("info").append("<tr><td>" + tranName + "</td><td>" + tranTarget + "</td><td>" + tranFrequency + "</td><td>" + nextTrain + "</td><td>" + timeAway + "</td></tr>");
+    $("#info").append("<tr><td>" + tranName + "</td><td>" + tranTarget + "</td><td>" + tranFrequency + "</td><td>" + nextTrain + "</td><td>" + timeAway + "</td></tr>");
 
 }, function(errorObj) {
     console.log("Errors handled: " + errorObj.code)
